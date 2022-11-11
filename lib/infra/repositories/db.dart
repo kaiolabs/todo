@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:todo/infra/models/teks.dart';
 import 'package:todo/infra/tables/table_task_feitas_nao_feitas.dart';
 import 'package:todo/infra/tables/table_task_todas.dart';
 
@@ -67,5 +68,74 @@ class DB {
   static Future<bool> tableChecker(String nameTable) async {
     var table = await db!.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='$nameTable'");
     return table.isNotEmpty; // retorna true se a tabela existe
+  }
+
+  // adicionar uma nova task na tabela task_todas
+  static Future<void> addTaskTodas(String title, String description) async {
+    await db!.insert(
+      'TASKSTODAS',
+      {
+        'TITLE': title,
+        'DESCRIPTION': description,
+      },
+    );
+  }
+
+  // adicionar uma nova task na tabela task_feitas
+  static Future<void> addTaskFeitas(String title, String description) async {
+    await db!.insert(
+      'TASKSFEITAS',
+      {
+        'TITLE': title,
+        'DESCRIPTION': description,
+      },
+    );
+  }
+
+  // adicionar uma nova task na tabela task_nao_feitas
+  static Future<void> addTaskNaoFeitas(String title, String description) async {
+    await db!.insert(
+      'TASKSNAOFEITAS',
+      {
+        'TITLE': title,
+        'DESCRIPTION': description,
+      },
+    );
+  }
+
+  // pegar todas as tasks da tabela task_todas
+  static Future<List<Task>> getTasksTodas() async {
+    final List<Map<String, dynamic>> maps = await db!.query('TASKSTODAS');
+
+    return List.generate(maps.length, (i) {
+      return Task(
+        title: maps[i]['TITLE'],
+        description: maps[i]['DESCRIPTION'],
+      );
+    });
+  }
+
+  // pegar todas as tasks da tabela task_feitas
+  static Future<List<Task>> getTasksFeitas() async {
+    final List<Map<String, dynamic>> maps = await db!.query('TASKSFEITAS');
+
+    return List.generate(maps.length, (i) {
+      return Task(
+        title: maps[i]['TITLE'],
+        description: maps[i]['DESCRIPTION'],
+      );
+    });
+  }
+
+  // pegar todas as tasks da tabela task_nao_feitas
+  static Future<List<Task>> getTasksNaoFeitas() async {
+    final List<Map<String, dynamic>> maps = await db!.query('TASKSNAOFEITAS');
+
+    return List.generate(maps.length, (i) {
+      return Task(
+        title: maps[i]['TITLE'],
+        description: maps[i]['DESCRIPTION'],
+      );
+    });
   }
 }

@@ -7,7 +7,6 @@ import '../enums/db_types_variables.dart';
 class TabelaTaskFeitas {
   static Future createTable(Database db) async {
     await db.execute('''CREATE TABLE TASKSFEITAS (
-        ID ${DBTypesVariables.idType.name},
         TITLE ${DBTypesVariables.varcharType.name},
         DESCRIPTION ${DBTypesVariables.varcharType.name}
       )''');
